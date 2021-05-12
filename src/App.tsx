@@ -1,26 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useStoreRehydrated } from 'easy-peasy';
+import { FC, memo } from 'react';
+import * as routerDom from 'react-router-dom';
+import { ThemeProvider } from '@material-ui/core/styles';
+import AppRoutes from './router';
+import theme from './theme';
+import AppLayout from './layout';
 
-function App() {
+const App: FC = () => {
+  const appRoutes = (routerDom as any).useRoutes(AppRoutes);
+  const isRehydrated = useStoreRehydrated();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <AppLayout>
+        {isRehydrated && appRoutes}
+      </AppLayout>
+    </ThemeProvider>
   );
-}
+};
 
-export default App;
+export default memo(App);
