@@ -6,7 +6,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { StoreProvider } from 'easy-peasy';
 import store from './store';
-import AppRouter from './router/AppRouter';
+import AppRouter from './router';
 
 ReactDOM.render(
   <React.StrictMode>
