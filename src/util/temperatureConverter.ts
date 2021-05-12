@@ -6,4 +6,4 @@ const conversionStrategies = new Map<string, (temp: number) => number>()
     .set(TemperatureUnitEnum.C, (temp: number) => temp);
 
 export const temperatureConverter = (temp: number, unit: TemperatureUnitEnum, roundTo = 2) =>
-    conversionStrategies.get(unit)?.(temp).toFixed(roundTo);
+    Number.parseFloat(conversionStrategies.get(unit)!(temp).toFixed(roundTo));

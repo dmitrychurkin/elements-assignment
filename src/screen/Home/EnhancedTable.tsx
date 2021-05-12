@@ -1,6 +1,6 @@
 import { FC, memo, useCallback, useState } from "react";
 import moment from 'moment';
-import * as routerDom from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,6 +14,7 @@ import useStyles from './style';
 import { getComparator, Order, stableSort, getStorageData, setStorageData, temperatureConverter } from "../../util";
 import { ITableData } from "./ITableData";
 import EnhancedTableHead from "./EnhancedTableHead";
+import { WeatherData } from "../../store/models/city/ICityModel";
 
 type Prop = {
     readonly rows: Array<ITableData<string>>;
@@ -22,7 +23,7 @@ type Prop = {
 
 const EnhancedTable: FC<Prop> = ({ rows, onToggleHide }) => {
     const classes = useStyles();
-    const navigate = (routerDom as any).useNavigate();
+    const navigate = useNavigate();
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<string>('calories');
     const [page, setPage] = useState(0);
@@ -34,8 +35,8 @@ const EnhancedTable: FC<Prop> = ({ rows, onToggleHide }) => {
         setOrderBy(property);
     }, [order, orderBy]);
 
-    const handleClick = useCallback((event: React.MouseEvent<HTMLElement>, state: ITableData<string>) => {
-        const city = state.city.toLowerCase();
+    const handleClick = useCallback((event: React.MouseEvent<HTMLElement>, row: ITableData<string>) => {
+        const city = row.city.toLowerCase();
 
         if ((event.target as HTMLInputElement).type === 'checkbox') {
             const cities: string[] = getStorageData('cities');
@@ -53,7 +54,17 @@ const EnhancedTable: FC<Prop> = ({ rows, onToggleHide }) => {
             return onToggleHide(city);
         }
 
-        navigate(city, { state });
+        const routerTransferState: WeatherData = {
+            ...row,
+            city: {
+                name: row.city,
+                picture: row.picture
+            }
+        };
+
+        navigate(city, {
+            state: routerTransferState
+        });
     }, [navigate, onToggleHide]);
 
     const handleChangePage = useCallback((event: unknown, newPage: number) => {
